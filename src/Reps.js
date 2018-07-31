@@ -27,7 +27,7 @@ class Reps extends Component {
   
   findReps() {
     // Set loading state to true.
-    this.setState({loading : true });
+    this.setState({loading : true }); 
     // All API keys
     const googleCivicApiKey = 'AIzaSyCwm16-md7FqE5MvCztpNVEpRtj2TSc9eo';
     const openStatesApiKey = '704034e8-3809-4a4a-91f0-452a9f4d2fdb';
@@ -127,8 +127,7 @@ class Reps extends Component {
   
   render() {
     const locale = this.state.location;
-    const billFilter = this.state.billFilter;
-    if (this.state.loading == true) {
+    if (this.state.loading === true) {
       return (
         <div className="Reps">
           <p>I live in:</p><input type="text" value={locale} onChange={this.handleLocationChange} />
@@ -151,6 +150,7 @@ class Reps extends Component {
               onChange={this.getInitialBillState} />
               Discrimination</label>
           </div>
+          <button onClick={this.findReps} >Click to Update</button>
           <p>Loading…</p>
         </div>
       );
