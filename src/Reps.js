@@ -27,7 +27,7 @@ class Reps extends Component {
   
   findReps() {
     // Set loading state to true.
-    this.setState({loading : true });
+    this.setState({loading : true }); 
     // All API keys
     const googleCivicApiKey = 'AIzaSyCwm16-md7FqE5MvCztpNVEpRtj2TSc9eo';
     const openStatesApiKey = '704034e8-3809-4a4a-91f0-452a9f4d2fdb';
@@ -68,13 +68,12 @@ class Reps extends Component {
         const lon = myJson.results[0].geometry.location.lng;
 
         // Use the latitude and longitude points to find user local legislators with Open States API
-        fetch(`https://openstates.org/api/v1/legislators/geo/?lat=${lat}&long=${lon}`, {
-          headers: {'X-API-KEY': openStatesApiKey}
-        })
+        fetch(`https://openstates.org/api/v1/legislators/geo/?lat=${lat}&long=${lon}&apikey=${openStatesApiKey}`)
         .then(response => {
           return response.json();
         })
         .then(myJson => {
+          console.log(myJson);
           // Store user local legislators in state
           const localReps = myJson.map((value, index) => {
             const fullName = value.full_name;
@@ -90,9 +89,7 @@ class Reps extends Component {
           this.setState({localReps : localReps });
 
           // Fetch state bill infomration for users state and selected bill query from Open States API
-          fetch(`https://openstates.org/api/v1/bills/?state=${state}&page=1&per_page=100&q=${billFilter}`, {
-            headers: {'X-API-KEY': openStatesApiKey}
-          })
+          fetch(`https://openstates.org/api/v1/bills/?state=${state}&page=1&per_page=100&q=${billFilter}&apikey=${openStatesApiKey}`)
           .then(response => {
             return response.json();
           })
@@ -127,8 +124,7 @@ class Reps extends Component {
   
   render() {
     const locale = this.state.location;
-    const billFilter = this.state.billFilter;
-    if (this.state.loading == true) {
+    if (this.state.loading === true) {
       return (
         <div className="Reps">
           <p>I live in:</p><input type="text" value={locale} onChange={this.handleLocationChange} />
@@ -151,6 +147,7 @@ class Reps extends Component {
               onChange={this.getInitialBillState} />
               Discrimination</label>
           </div>
+          <button onClick={this.findReps} >Click to Update</button>
           <p>Loading…</p>
         </div>
       );
