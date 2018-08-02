@@ -7,7 +7,7 @@ class Reps extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      location:'Denver,CO',
+      location:'Denver, CO',
       state: 'CO',
       reps: [],
       stateBills: [],
@@ -73,7 +73,6 @@ class Reps extends Component {
           return response.json();
         })
         .then(myJson => {
-          console.log(myJson);
           // Store user local legislators in state
           const localReps = myJson.map((value, index) => {
             const fullName = value.full_name;
@@ -121,42 +120,15 @@ class Reps extends Component {
   getInitialBillState(event) {
     this.setState({billFilter: event.target.value})
   }
-  
+
   render() {
     const locale = this.state.location;
     if (this.state.loading === true) {
       return (
         <div className="Reps">
-          <p>I live in:</p><input type="text" value={locale} onChange={this.handleLocationChange} />
-          <p>Filter bills by:</p>
-          <div>
-              <label><input type="radio" id="bail" name="billFilter" value="Bail" 
-              checked={this.state.billFilter==='Bail'} 
-              onChange={this.getInitialBillState} />
-              Bail</label>
-              <label><input type="radio" id="police" name="billFilter" value="Police" 
-              checked={this.state.billFilter==='Police'} 
-              onChange={this.getInitialBillState} />
-              Police</label>
-              <label><input type="radio" id="prison" name="billFilter" value="Prison" 
-              checked={this.state.billFilter==='Prison'} 
-              onChange={this.getInitialBillState} />
-              Prison</label>
-              <label><input type="radio" id="discrimination" name="billFilter" value="Discrimination" 
-              checked={this.state.billFilter==='Discrimination'} 
-              onChange={this.getInitialBillState} />
-              Discrimination</label>
-          </div>
-          <button onClick={this.findReps} >Click to Update</button>
-          <p>Loading…</p>
-        </div>
-      );
-    }
-    return (
-      <div className="Reps">
-        <p>I live in:</p><input type="text" value={locale} onChange={this.handleLocationChange} />
-        <p>Filter bills by:</p>
-        <div>
+          <div className="search-container">
+            <p>I live in:</p><input type="text" value={locale} onChange={this.handleLocationChange} />
+            <p>Filter bills by:</p>
             <label><input type="radio" id="bail" name="billFilter" value="Bail" 
             checked={this.state.billFilter==='Bail'} 
             onChange={this.getInitialBillState} />
@@ -172,9 +144,36 @@ class Reps extends Component {
             <label><input type="radio" id="discrimination" name="billFilter" value="Discrimination" 
             checked={this.state.billFilter==='Discrimination'} 
             onChange={this.getInitialBillState} />
-            Discrimination</label>
+            Discrimination</label><br/><br/>
+            <button onClick={this.findReps} >Click to Update</button>
+          </div>
+          <p>Loading…</p>
         </div>
-        <button onClick={this.findReps} >Click to Update</button>
+      );
+    }
+    return (
+      <div className="Reps">
+        <div className="search-container">
+          <p>I live in:</p><input type="text" value={locale} onChange={this.handleLocationChange} />
+          <p>Filter bills by:</p>
+          <label><input type="radio" id="bail" name="billFilter" value="Bail" 
+          checked={this.state.billFilter==='Bail'} 
+          onChange={this.getInitialBillState} />
+          Bail</label>
+          <label><input type="radio" id="police" name="billFilter" value="Police" 
+          checked={this.state.billFilter==='Police'} 
+          onChange={this.getInitialBillState} />
+          Police</label>
+          <label><input type="radio" id="prison" name="billFilter" value="Prison" 
+          checked={this.state.billFilter==='Prison'} 
+          onChange={this.getInitialBillState} />
+          Prison</label>
+          <label><input type="radio" id="discrimination" name="billFilter" value="Discrimination" 
+          checked={this.state.billFilter==='Discrimination'} 
+          onChange={this.getInitialBillState} />
+          Discrimination</label><br/><br/>
+          <button onClick={this.findReps} >Click to Update</button>
+        </div>
         <UnorderedList items={this.state.reps} />
         <p></p>
         <h1>Your local representatives</h1>
