@@ -19,12 +19,16 @@ h2 {
 }
 
 input {
-	font-size: 40px;
+	font-size: 26px;
 	padding: 20px;
 	text-align: center;
 	border: 0px;
 	color: #FA521A;
 	margin: 0px 0px 20px 0px;
+}
+
+input[type=text] {
+	width: 80%;
 }
 
 input[type=radio] {
