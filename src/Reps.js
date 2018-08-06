@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 import './App.css';
 import UnorderedList from './components/UnorderedList';
+require('dotenv').config({path: '.env'})
+
 
 
 class Reps extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      location:'Denver, CO',
-      state: 'CO',
+      location:'1600 Pennsylvania Ave. , NW. Washington, DC 20500',
+      state: 'DC',
       reps: [],
       stateBills: [],
       localReps: [],
@@ -29,9 +31,12 @@ class Reps extends Component {
     // Set loading state to true.
     this.setState({loading : true }); 
     // All API keys
-    const googleCivicApiKey = 'AIzaSyCwm16-md7FqE5MvCztpNVEpRtj2TSc9eo';
-    const openStatesApiKey = '704034e8-3809-4a4a-91f0-452a9f4d2fdb';
-    const googleGeocodeApiKey = 'AIzaSyCbhulKKL_yvx4MMHVLgKFgJgzkfk4ryfc';
+    // Create a API Key for the Google Civic API. https://developers.google.com/civic-information/
+    const googleCivicApiKey = process.env.REACT_APP_GOOGLE_CIVIC_API;
+    // Create a API Key for Open States API http://docs.openstates.org/en/latest/api/
+    const openStatesApiKey = process.env.REACT_APP_OPENSTATES_API;
+    // Create an API Key for geocode.xyz for geocoding addresses to latitude and longitute http://docs.openstates.org/en/latest/api/
+    const geocodeApiKey = process.env.REACT_APP_GEOCODE_API;
 
     const location = this.state.location;
     const billFilter = this.state.billFilter;
@@ -59,13 +64,14 @@ class Reps extends Component {
       this.setState({state: myJson.normalizedInput.state})
 
       // Use Googles geocoding API to convert user location to latitude and longitute points
-      fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${location}&key=${googleGeocodeApiKey}`)
+      fetch(`https://geocode.xyz/${location}?&geoit=json&auth=${geocodeApiKey}`)
       .then(response => {
         return response.json();
       })
       .then(myJson => {
-        const lat = myJson.results[0].geometry.location.lat;
-        const lon = myJson.results[0].geometry.location.lng;
+        console.log(myJson);
+        const lat = myJson.latt;
+        const lon = myJson.longt;
 
         // Use the latitude and longitude points to find user local legislators with Open States API
         fetch(`https://openstates.org/api/v1/legislators/geo/?lat=${lat}&long=${lon}&apikey=${openStatesApiKey}`)
@@ -127,7 +133,7 @@ class Reps extends Component {
       return (
         <div className="Reps">
           <div className="search-container">
-            <p>I live in:</p><input type="text" value={locale} onChange={this.handleLocationChange} />
+            <p>My address is:</p><input type="text" value={locale} onChange={this.handleLocationChange} />
             <p>Filter bills by:</p>
             <label><input type="radio" id="bail" name="billFilter" value="Bail" 
             checked={this.state.billFilter==='Bail'} 
@@ -154,7 +160,7 @@ class Reps extends Component {
     return (
       <div className="Reps">
         <div className="search-container">
-          <p>I live in:</p><input type="text" value={locale} onChange={this.handleLocationChange} />
+          <p>My address is:</p><input type="text" value={locale} onChange={this.handleLocationChange} />
           <p>Filter bills by:</p>
           <label><input type="radio" id="bail" name="billFilter" value="Bail" 
           checked={this.state.billFilter==='Bail'} 
