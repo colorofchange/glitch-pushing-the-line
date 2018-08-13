@@ -20,6 +20,9 @@ class App extends Component {
           <h2>Welcome to pushing the line</h2>
         </div>
         <Reps/>
+        <div>
+          <a className="get-registered" href="https://coc.turbovote.org/?r=glitch" target="_blank">Register to Vote!</a>
+        </div>
       </div>
     );
   }
