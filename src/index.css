@@ -1,11 +1,36 @@
 body {
-	margin: 0;
-	padding: 0;
+	margin: 0px 0px 40px 0px;
+	padding: 0px;
 	font-family: sans-serif;
+}
+
+main {
+	max-width: 1020px;
+	padding: 15px;
+	margin: 0px auto;
 }
 
 h2 {
 	font-size: 30px;
+}
+
+a {
+	color: white;
+}
+
+a:hover {
+	color: #FA521A;
+}
+
+a.get-registered {
+	background-color: #FA521A;
+	padding: 20px;
+	margin: 40px auto;
+	text-decoration: none;
+}
+
+a.get-registered:hover {
+	background-color: black;
 }
 
 .search-container {
@@ -35,7 +60,26 @@ input[type=radio] {
 	margin: 0px 5px 0px 15px;
 }
 
-ul {
-  list-style-type: none;
-  padding: 0px;
+ul.grid {
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: center;
+	list-style-type: none;
+	padding: 0px;
+	font-size: 14px;
+}
+
+ul.grid li.col {
+	width: 200px;
+	text-align: center;
+	background-color: black;
+	color: white;
+	padding: 10px;
+	margin: 10px;
+}
+
+@media only screen and (max-width: 600px) {
+	ul.grid li.col {
+		width: 100%;
+	}
 }
