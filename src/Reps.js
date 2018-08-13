@@ -36,7 +36,7 @@ class Reps extends Component {
     const googleCivicApiKey = process.env.REACT_APP_GOOGLE_CIVIC_API;
     // Create a API Key for Open States API http://docs.openstates.org/en/latest/api/
     const openStatesApiKey = process.env.REACT_APP_OPENSTATES_API;
-    // Create an API Key for geocode.xyz for geocoding addresses to latitude and longitute http://docs.openstates.org/en/latest/api/
+    // Create an API Key for geocode.xyz for geocoding addresses to latitude and longitute https://geocode.xyz/api
     const geocodeApiKey = process.env.REACT_APP_GEOCODE_API;
 
     const location = this.state.location;
