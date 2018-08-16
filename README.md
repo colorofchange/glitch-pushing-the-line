@@ -1,3 +1,8 @@
+## #Remix4Change Challenge
+Fight voter suppression and help empower Black voters
+
+What’s #Remix4Change? #Remix4Change is an online hackathon with the aim of empowering Black voters through technology in collaboration with creators. Learn more on how you can participate at [https://about.glitch.me/remix4change](https://about.glitch.me/remix4change)
+
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
 Below you will find some information on how to perform common tasks.<br>
