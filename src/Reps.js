@@ -9,7 +9,7 @@ class Reps extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      location:'1600 Pennsylvania Ave. , NW. Washington, DC 20500',
+      location:'1600 Pennsylvania Ave NW, Washington, DC 20500',
       state: 'DC',
       reps: [],
       stateBills: [],
@@ -17,7 +17,8 @@ class Reps extends Component {
       billFilter: 'Bail',
       billText: 'Bail',
       loading: true,
-      geocodingError: false
+      geocodingErrorMessage: '',
+      openStatesErrorMessage: ''
     };
     this.findReps = this.findReps.bind(this);
     this.handleLocationChange = this.handleLocationChange.bind(this);
@@ -42,12 +43,18 @@ class Reps extends Component {
     const location = this.state.location;
     const billFilter = this.state.billFilter;
 
+    function handleErrors(response) {
+        if (!response.ok) {
+            throw Error(response.statusText);
+        }
+        return response.json();
+    }
+
     // Fetch representatives from Google Civic API based on user location
     fetch(`https://www.googleapis.com/civicinfo/v2/representatives?key=${googleCivicApiKey}&address=${location}`)
-    .then(response => {
-      return response.json();
-    })
+    .then(handleErrors)
     .then(myJson => {
+      // console.log(myJson);
       // Store all officials positions in an array since some positions have multiple officials.
       var officialPositions = [];
       myJson.offices.map(o => {
@@ -73,23 +80,20 @@ class Reps extends Component {
 
       // Use Googles geocoding API to convert user location to latitude and longitute points
       fetch(`https://geocode.xyz/${location}?&geoit=json&auth=${geocodeApiKey}`)
-      .then(response => {
-        return response.json();
-      })
+      .then(handleErrors)
       .then(myJson => {
         const lat = myJson.latt;
         const lon = myJson.longt;
 
+        console.log(myJson)
         // Use the latitude and longitude points to find user local legislators with Open States API
         fetch(`https://openstates.org/api/v1/legislators/geo/?lat=${lat}&long=${lon}&apikey=${openStatesApiKey}`)
-        .then(response => {
-          return response.json();
-        })
+        .then(handleErrors)
         .then(myJson => {
           if (myJson.length == 0) {
-            this.setState({geocodingError : true });
+            this.setState({geocodingErrorMessage : 'Uh oh, it looks like there might have been an error finding your local reps. Try another address.' });
           } else {
-            this.setState({geocodingError : false });
+            // this.setState({geocodingErrorMessage : '' });
             // Store user local legislators in state
             const localReps = myJson.map((value, index) => {
               const fullName = value.full_name;
@@ -107,10 +111,9 @@ class Reps extends Component {
 
           // Fetch state bill infomration for users state and selected bill query from Open States API
           fetch(`https://openstates.org/api/v1/bills/?state=${state}&page=1&per_page=100&q=${billFilter}&apikey=${openStatesApiKey}`)
-          .then(response => {
-            return response.json();
-          })
+          .then(handleErrors)
           .then(myJson => {
+            // console.log(myJson)
             // Store the latest bills in a state
             const bills = myJson.map((value, index) => {
               const billId = value.bill_id;
@@ -121,13 +124,31 @@ class Reps extends Component {
             })
             this.setState({billText : this.state.billFilter })
             this.setState({stateBills : bills });
+            this.setState({openStatesErrorMessage : '' });
+            this.setState({loading : false });
             // Set loading state to false
+          })
+          .catch(error => {
+            console.log(error);
+            this.setState({openStatesErrorMessage : 'Uh oh, it looks like there might have been an error with the OpenStates API.' });
             this.setState({loading : false });
           });
+        })
+        .catch(error => {
+          console.log(error);
+          this.setState({openStatesErrorMessage : 'Uh oh, it looks like there might have been an error with the OpenStates API.' });
+          this.setState({loading : false });
         });
       })
-
-
+      .catch(error => {
+        console.log(error) 
+        this.setState({geocodingErrorMessage : 'Uh oh, it looks like there might have been an error finding your local reps. Try another address.' });
+        this.setState({loading : false });
+      });
+    })
+    .catch(error => {
+      console.log(error) 
+      this.setState({loading : false });
     });
   }
   
@@ -141,7 +162,8 @@ class Reps extends Component {
 
   render() {
     const locale = this.state.location;
-    const geoError = <p>Uh oh, it looks like there might have been an error finding your local reps. Try another address.</p>;
+    // const geoError = <p>Uh oh, it looks like there might have been an error finding your local reps. Try another address.</p>;
+    // const openError = <p>Uh oh, it looks like there might have been an error with the OpenStates API.</p>;
     const search = <div className="search-container">
         <p>My address is:</p><input type="text" value={locale} onChange={this.handleLocationChange} />
         <p>Filter bills by:</p>
@@ -172,35 +194,19 @@ class Reps extends Component {
           <br/>
         </div>
       );
-    } else if (this.state.geocodingError) {
-      return (
-        <div className="Reps">
-          {search}
-          <main>
-            <UnorderedList items={this.state.reps} />
-            <p></p>
-            <h1>Your local representatives</h1>
-            {geoError}
-            <p></p>
-            <h1>Latest {this.state.billText}-Related State Bills for {this.state.state}</h1>
-            <UnorderedList items={this.state.stateBills} />
-            <p></p>
-          </main>
-        </div>
-      );
     } else {
       return (
         <div className="Reps">
           {search}
           <main>
             <UnorderedList items={this.state.reps} />
-            <p></p>
             <h1>Your local representatives</h1>
+            <p>{this.state.localReps}</p>
             <UnorderedList items={this.state.localReps} />
-            <p></p>
+            <p>{this.state.geocodingErrorMessage}</p>
             <h1>Latest {this.state.billText}-Related State Bills for {this.state.state}</h1>
             <UnorderedList items={this.state.stateBills} />
-            <p></p>
+            <p>{this.state.openStatesErrorMessage}</p>
           </main>
         </div>
       );
