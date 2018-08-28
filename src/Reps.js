@@ -54,7 +54,6 @@ class Reps extends Component {
     fetch(`https://www.googleapis.com/civicinfo/v2/representatives?key=${googleCivicApiKey}&address=${location}`)
     .then(handleErrors)
     .then(myJson => {
-      // console.log(myJson);
       // Store all officials positions in an array since some positions have multiple officials.
       var officialPositions = [];
       myJson.offices.map(o => {
@@ -85,7 +84,6 @@ class Reps extends Component {
         const lat = myJson.latt;
         const lon = myJson.longt;
 
-        console.log(myJson)
         // Use the latitude and longitude points to find user local legislators with Open States API
         fetch(`https://openstates.org/api/v1/legislators/geo/?lat=${lat}&long=${lon}&apikey=${openStatesApiKey}`)
         .then(handleErrors)
@@ -113,7 +111,6 @@ class Reps extends Component {
           fetch(`https://openstates.org/api/v1/bills/?state=${state}&page=1&per_page=100&q=${billFilter}&apikey=${openStatesApiKey}`)
           .then(handleErrors)
           .then(myJson => {
-            // console.log(myJson)
             // Store the latest bills in a state
             const bills = myJson.map((value, index) => {
               const billId = value.bill_id;
@@ -201,7 +198,6 @@ class Reps extends Component {
           <main>
             <UnorderedList items={this.state.reps} />
             <h1>Your local representatives</h1>
-            <p>{this.state.localReps}</p>
             <UnorderedList items={this.state.localReps} />
             <p>{this.state.geocodingErrorMessage}</p>
             <h1>Latest {this.state.billText}-Related State Bills for {this.state.state}</h1>
