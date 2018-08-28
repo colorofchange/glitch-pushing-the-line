@@ -9,7 +9,7 @@ class Reps extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      location:'1600 Pennsylvania Ave NW, Washington, DC 20500',
+      location:'1600 Pennsylvania Ave NW, Washington, DC 20500, USA',
       state: 'DC',
       reps: [],
       stateBills: [],
@@ -31,6 +31,12 @@ class Reps extends Component {
   
   findReps() {
     // Set loading state to true.
+    this.setState({reps : [] }); 
+    this.setState({stateBills : [] }); 
+    this.setState({localReps : [] }); 
+    this.setState({geocodingErrorMessage : '' }); 
+    this.setState({openStatesErrorMessage : '' }); 
+
     this.setState({loading : true }); 
     // All API keys
     // Create a API Key for the Google Civic API. https://developers.google.com/civic-information/
@@ -89,7 +95,7 @@ class Reps extends Component {
         .then(handleErrors)
         .then(myJson => {
           if (myJson.length == 0) {
-            this.setState({geocodingErrorMessage : 'Uh oh, it looks like there might have been an error finding your local reps. Try another address.' });
+            this.setState({geocodingErrorMessage : 'Uh oh, it looks like there might have been an error finding your local reps. Try adding a zip code or "USA" to the end of the address.' });
           } else {
             // this.setState({geocodingErrorMessage : '' });
             // Store user local legislators in state
